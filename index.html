@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of Romeo & Juliet</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variabel Palet Warna */
+        :root {
+            --bg-creme: #FAF6F0;
+            --dark-royal: #111111;
+            --gold-gradient: linear-gradient(135deg, #B38728 0%, #FBF5B7 25%, #DAA520 50%, #FBF5B7 75%, #AA771C 100%);
+            --gold-solid: #C5A059;
+            --font-serif: 'Cinzel', serif;
+            --font-script: 'Sacramento', cursive;
+            --font-sans: 'Montserrat', sans-serif;
+        }
+
+        /* Reset Dasar */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-creme);
+            color: var(--dark-royal);
+            font-family: var(--font-sans);
+            text-align: center;
+            overflow: hidden; /* Mencegah scroll sebelum undangan dibuka */
+        }
+
+        /* Teks Emas Gradasi */
+        .gold-text {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* 1. HALAMAN SAMPUL */
+        #wedding-cover {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(rgba(17, 17, 17, 0.6), rgba(17, 17, 17, 0.85)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 20px;
+        }
+        #wedding-cover.opened { transform: translateY(-100vh); }
+        .cover-title { font-family: var(--font-serif); font-size: 1.2rem; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 25px; color: #dfdfdf; }
+        .cover-names { font-family: var(--font-script); font-size: 5.5rem; margin-bottom: 10px; line-height: 1.2; }
+        .guest-box { margin: 40px 0; background: rgba(255, 255, 255, 0.05); padding: 25px 40px; border-radius: 8px; border: 1px solid rgba(251, 245, 183, 0.2); backdrop-filter: blur(5px); }
+        .guest-box p { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: #ccc; margin-bottom: 10px; }
+        .guest-name { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; }
+        .btn-open { background: var(--gold-gradient); color: var(--dark-royal); border: none; padding: 15px 35px; font-family: var(--font-sans); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4); transition: 0.3s ease; }
+        .btn-open:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(218, 165, 32, 0.6); }
+
+        /* Animasi Scroll */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Hero Utama */
+        .main-hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(rgba(250, 246, 240, 0.85), rgba(250, 246, 240, 0.85)), url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=2000') center/cover fixed no-repeat; padding: 20px; }
+        .main-hero h2 { font-family: var(--font-serif); font-size: 1.5rem; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 20px; }
+        .main-hero h1 { font-family: var(--font-script); font-size: 7rem; line-height: 1; margin-bottom: 20px; }
+        .main-hero .date { font-family: var(--font-serif); font-size: 1.3rem; letter-spacing: 4px; border-top: 1px solid var(--gold-solid); border-bottom: 1px solid var(--gold-solid); padding: 10px 30px; }
+
+        /* Seksi Global */
+        section { padding: 120px 20px; max-width: 900px; margin: 0 auto; }
+        .section-title { font-family: var(--font-serif); font-size: 2.5rem; letter-spacing: 3px; margin-bottom: 60px; text-transform: uppercase; }
+
+        /* BINGKAI FOTO MEWAH (DOUBLE-LINE ELEGANT) */
+        .couple-photo-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 80px; 
+            margin-top: 20px;
+        }
+        .couple-photo-frame {
+            position: relative;
+            width: 320px;
+            height: 440px;
+            z-index: 2;
+            transition: transform 0.7s ease;
+        }
+        .couple-photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 160px 160px 15px 15px; 
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+        }
+        .couple-photo-frame::before {
+            content: ''; position: absolute;
+            top: -15px; left: -15px; right: -15px; bottom: -15px;
+            border: 2px solid var(--gold-solid);
+            border-radius: 175px 175px 25px 25px;
+            z-index: 4; pointer-events: none; opacity: 0.8;
+        }
+        .couple-photo-frame::after {
+            content: ''; position: absolute;
+            top: 20px; bottom: -20px; left: 20px; right: -20px;
+            border: 1px solid rgba(197, 160, 89, 0.6);
+            border-radius: 160px 160px 15px 15px;
+            z-index: 1; background-color: rgba(197, 160, 89, 0.03); 
+        }
+        .couple-photo-frame:hover { transform: translateY(-5px); }
+
+        /* Teks Profil Mempelai */
+        .mempelai-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 60px; }
+        .mempelai-card { flex: 1 1 300px; padding: 20px; }
+        .mempelai-card h3 { font-family: var(--font-script); font-size: 4rem; color: var(--gold-solid); margin-bottom: 5px; line-height: 1.2; }
+        .mempelai-card .real-name { font-family: var(--font-serif); font-weight: 600; font-size: 1.3rem; letter-spacing: 1px; margin-bottom: 15px; }
+        .mempelai-card p { color: #555; font-size: 0.95rem; }
+        .ampersand-center { font-family: var(--font-script); font-size: 5rem; color: var(--gold-solid); margin: 20px 0; align-self: center; }
+
+        /* Detail Acara */
+        .events-grid { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; }
+        .event-box { background: white; padding: 60px 40px; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.03); flex: 1 1 350px; border: 1px solid rgba(197, 160, 89, 0.15); position: relative; }
+        .event-box::after { content: ''; position: absolute; top: 15px; bottom: 15px; left: 15px; right: 15px; border: 1px solid rgba(197, 160, 89, 0.2); pointer-events: none; }
+        .event-box h3 { font-family: var(--font-serif); font-size: 1.6rem; letter-spacing: 2px; margin-bottom: 25px; text-transform: uppercase; }
+        .event-box p { margin-bottom: 12px; font-size: 0.95rem; color: #444; }
+        .event-box .gold-badge { display: inline-block; background: var(--gold-gradient); color: var(--dark-royal); padding: 6px 25px; font-weight: 600; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; border-radius: 20px; margin: 15px 0; }
+        
+        /* RSVP FORM INTERAKTIF */
+        .rsvp-section { background-color: white; border-top: 1px solid rgba(197, 160, 89, 0.15); border-bottom: 1px solid rgba(197, 160, 89, 0.15); }
+        .rsvp-form { max-width: 550px; margin: 0 auto; text-align: left; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; padding: 15px; border: 1px solid #ccc; font-family: var(--font-sans); font-size: 0.95rem; background-color: var(--bg-creme); border-radius: 4px; transition: 0.3s; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--gold-solid); outline: none; background-color: white; }
+        .btn-submit { background-color: var(--dark-royal); color: white; border: none; width: 100%; padding: 16px; font-family: var(--font-sans); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; margin-top: 10px; border-radius: 4px; }
+        .btn-submit:hover { background-color: var(--gold-solid); color: var(--dark-royal); }
+
+        /* WEDDING GIFT / REKENING */
+        .gift-container { max-width: 450px; margin: 0 auto; background: white; padding: 40px; border: 1px solid rgba(197, 160, 89, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.02); border-radius: 8px; position: relative;}
+        .btn-copy { background: transparent; border: 1px solid var(--dark-royal); padding: 10px 20px; cursor: pointer; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-top: 15px; transition: 0.3s; border-radius: 4px;}
+        .btn-copy:hover { background: var(--dark-royal); color: white; }
+
+        /* Floating Music */
+        #music-control { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; background: white; border: 1px solid var(--gold-solid); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 999; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-size: 1.2rem; }
+        .pulse-animation { animation: rotateMusic 4s linear infinite; }
+        @keyframes rotateMusic { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cover-names { font-size: 4rem; }
+            .main-hero h1 { font-size: 4.8rem; }
+            .mempelai-card h3 { font-size: 3.5rem; }
+            .couple-photo-frame { width: 250px; height: 350px; }
+            .couple-photo-frame::before { border-radius: 140px 140px 20px 20px; }
+            .couple-photo-frame::after { border-radius: 125px 125px 15px 15px; }
+            section { padding: 80px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Musik -->
+    <audio id="wedding-music" loop>
+        <source src="Tiara Andini, Arsy Widianto - Lagu Pernikahan Kita.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-control" onclick="toggleMusic(event)" style="display: none;">🎵</div>
+
+    <!-- Halaman Sampul -->
+    <div id="wedding-cover">
+        <div class="cover-title">The Wedding Of</div>
+        <div class="cover-names gold-text">Robi & Fiya</div>
+        <div class="guest-box">
+            <p>Spesial Untuk Bapak/Ibu/Saudara/i:</p>
+            <div class="guest-name" id="guest-name">Tamu Undangan</div>
+        </div>
+        <button class="btn-open" onclick="openInvitation()">Buka Undangan</button>
+    </div>
+
+    <!-- Hero -->
+    <header class="main-hero">
+        <h2 class="reveal">The Wedding Of</h2>
+        <h1 class="gold-text reveal" style="transition-delay: 0.2s;">Robi & Fiya</h1>
+        <div class="date reveal" style="transition-delay: 0.4s;">Sabtu, 26 Juli 2026</div>
+    </header>
+
+    <!-- Profil Mempelai & Foto Utama -->
+    <section id="mempelai">
+        <h2 class="section-title reveal">Mempelai</h2>
+        
+        <!-- FOTO PASANGAN DENGAN BINGKAI -->
+        <div class="couple-photo-wrapper reveal">
+            <div class="couple-photo-frame">
+                <!-- URL FOTO BISA DIGANTI DI SINI -->
+                <img src="Robi&Fiya.jpeg" alt="Foto Mempelai Bersama">
+            </div>
+        </div>
+
+        <div class="mempelai-container">
+            <div class="mempelai-card reveal">
+                <h3>Robi</h3>
+                <div class="real-name">Robi Gunawan</div>
+                <p>Putra dari Bpk. Wasran & Ibu Salamah</p>
+            </div>
+            <div class="ampersand-center reveal">&</div>
+            <div class="mempelai-card reveal">
+                <h3>Fiya</h3>
+                <div class="real-name">Himmatul Ashfiya</div>
+                <p>Putri dari Bpk. Masno & Romanah (Almh)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acara -->
+    <section id="acara">
+        <h2 class="section-title reveal">Waktu & Tempat</h2>
+        <div class="events-grid">
+            <div class="event-box reveal">
+                <h3>Akad Nikah</h3>
+                <p>Sabtu, 26 Juli 2026</p>
+                <div class="gold-badge">09:00 WIB</div>
+                <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">Jl. Bawal Rt. 002 Rw. 002 Ds. Kalisoka Kec. Dukuhwaru</p>
+            </div>
+            <div class="event-box reveal" style="transition-delay: 0.2s;">
+                <h3>Resepsi Pernikahan</h3>
+                <p>Sabtu, 26 Juli 2026</p>
+                <div class="gold-badge">10:00 - Selesai</div>
+                <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">Jl. Bawal Rt. 002 Rw. 002 Ds. Kalisoka Kec. Dukuhwaru</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULIR RSVP -->
+    <section id="rsvp" class="rsvp-section reveal">
+        <h2 class="section-title">Konfirmasi Kehadiran</h2>
+        <div class="rsvp-form">
+            <form id="form-kehadiran" onsubmit="submitRSVP(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="rsvp-name" required placeholder="Masukkan nama Anda">
+                </div>
+                <div class="form-group">
+                    <label>Konfirmasi Kehadiran</label>
+                    <select id="rsvp-status" required>
+                        <option value="">-- Pilih Status Kehadiran --</option>
+                        <option value="Hadir">Saya Akan Hadir</option>
+                        <option value="Tidak Hadir">Maaf, Berhalangan Hadir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Tamu (Pax)</label>
+                    <select id="rsvp-pax">
+                        <option value="1">1 Orang</option>
+                        <option value="2">2 Orang</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Kirim Konfirmasi</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- WEDDING GIFT / REKENING -->
+    <section id="gift" class="reveal">
+        <h2 class="section-title">Wedding Gift</h2>
+        <p style="margin-bottom: 40px; color:#555; max-width: 600px; margin-inline: auto;">
+            Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun, jika Anda ingin memberikan tanda kasih secara <i>cashless</i>, dapat disalurkan melalui rekening di bawah ini:
+        </p>
+        <div class="gift-container">
+            <p style="font-family: var(--font-serif); font-weight: 600; letter-spacing: 2px;">DANA</p>
+            <p id="no-rek" style="font-size: 1.8rem; font-weight: 600; color: var(--gold-solid); margin: 15px 0; letter-spacing: 2px;">081234206559</p>
+            <p style="font-size: 1.1rem; margin-bottom: 20px;">a.n. Himmatul Ashfiya</p>
+            <button class="btn-copy" onclick="copyAccount()">Salin Nomor Rekening</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="padding: 80px 20px; background-color: white; border-top: 1px solid rgba(197, 160, 89, 0.2);">
+        <h1 class="gold-text" style="font-family: var(--font-script); font-size: 4rem; margin-bottom: 10px;">Robi & Fiya</h1>
+        <p style="font-size: 0.85rem; color: #888; letter-spacing: 1px;">&copy; 2026 Exclusive Wedding Invitation. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Script Logika -->
+    <script>
+        // Tangkap Nama dari URL (?to=Nama)
+        const urlParams = new URLSearchParams(window.location.search);
+        const toGuest = urlParams.get('to');
+        if (toGuest) { 
+            document.getElementById('guest-name').innerText = toGuest;
+            document.getElementById('rsvp-name').value = toGuest; // Isi otomatis ke form RSVP
+        }
+
+        var music = document.getElementById("wedding-music");
+        var musicControl = document.getElementById("music-control");
+
+        // Buka Undangan & Play Musik
+        function openInvitation() {
+            document.getElementById("wedding-cover").classList.add("opened");
+            document.body.style.overflow = "auto";
+            music.play();
+            musicControl.style.display = "flex";
+            musicControl.classList.add("pulse-animation");
+            reveal(); // Trigger animasi pertama
+        }
+
+        // Toggle Play/Pause Musik
+        function toggleMusic(e) {
+            if (music.paused) {
+                music.play();
+                musicControl.innerText = "🎵";
+                musicControl.classList.add("pulse-animation");
+            } else {
+                music.pause();
+                musicControl.innerText = "🔇";
+                musicControl.classList.remove("pulse-animation");
+            }
+        }
+
+        // Animasi Scroll Reveal
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 80) { reveals[i].classList.add("active"); }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+
+        // Fitur Copy Rekening
+        function copyAccount() {
+            var rText = document.getElementById("no-rek").innerText;
+            navigator.clipboard.writeText(rText).then(function() {
+                alert("Nomor Rekening BCA Berhasil Disalin: " + rText);
+            });
+        }
+
+        // Fitur Submit RSVP (Simulasi)
+        function submitRSVP(e) {
+            e.preventDefault();
+            var name = document.getElementById("rsvp-name").value;
+            var status = document.getElementById("rsvp-status").value;
+            alert("Terima kasih, " + name + "!\nKonfirmasi bahwa Anda '" + status + "' telah berhasil dikirimkan kepada mempelai.");
+        }
+    </script>
+</body>
+</html>
